@@ -15,12 +15,14 @@ app.use(express.urlencoded({extended: true}))
 mongoose.connect(process.env.DB, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true})
 
 const rootRouter = require(`./routes/rootRoute/root`)
-const signUpRouter = require(`./routes/signUpRoute/signUp`)
-const loginRouter = require(`./routes/loginRoute/login`)
+const signUpRouter = require(`./routes/users/signUpRoute/signUp`)
+const loginRouter = require(`./routes/users/loginRoute/login`)
+const postsRouter = require(`./routes/postsRoute/posts`)
 
 app.use(rootRouter)
 app.use(loginRouter)
 app.use(signUpRouter)
+app.use(postsRouter)
 
 // Error Handler
 app.use((req, res, next) => {
