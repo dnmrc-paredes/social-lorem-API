@@ -12,17 +12,19 @@ app.use(helmet())
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-mongoose.connect(process.env.DB, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true})
+mongoose.connect(process.env.DB, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false})
 
 const rootRouter = require(`./routes/rootRoute/root`)
 const signUpRouter = require(`./routes/users/signUpRoute/signUp`)
 const loginRouter = require(`./routes/users/loginRoute/login`)
 const postsRouter = require(`./routes/postsRoute/posts`)
+const reactsRouter = require('./routes/reactsRoute/react')
 
 app.use(rootRouter)
 app.use(loginRouter)
 app.use(signUpRouter)
 app.use(postsRouter)
+app.use(reactsRouter)
 
 // Error Handler
 app.use((req, res, next) => {

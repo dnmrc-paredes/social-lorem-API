@@ -3,9 +3,15 @@ const mongoose = require(`mongoose`)
 const postSchema = new mongoose.Schema({
     content: String,
     comments: [],
-    likes: {
-        type: Number,
-        default: 0
+    likes: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'user'
+        }
+    ],
+    postBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user'
     }
 })
 

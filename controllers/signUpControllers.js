@@ -43,7 +43,11 @@ const signUpUser = async (req, res, next) => {
     } catch (err) {
         
         if (err.code === 11000) {
-            next(createError(400, "Email already taken."))
+            return next(createError(400, "Email already taken."))
+        }
+
+        if (err.name === "ValidationError") {
+            return next(createError(400, "Email must be valid."))
         }
 
         next(createError(400, err))
