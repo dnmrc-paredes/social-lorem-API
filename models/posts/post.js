@@ -15,6 +15,14 @@ const postSchema = new mongoose.Schema({
     }
 })
 
+// const populateLikesAndPost = function(next) {
+//     this.populate('postBy');
+//     next();
+// };
+  
+// postSchema.pre('findOne', populateLikesAndPost)
+// .pre('find', populateLikesAndPost)
+
 const post = new mongoose.model('post', postSchema)
 
 module.exports = post

@@ -9,7 +9,9 @@ const reactCounter =  async (req, res, next) => {
 
     const postReacted = await post.findOne({_id: postID})
 
-    if (postReacted.likes.includes(userID)) {
+      if (userID === null) {
+        return
+      } else if (postReacted.likes.includes(userID)) {
         const removeReact = await post.findOneAndUpdate({_id: postID}, {
         $pull: {
             likes: userID
@@ -25,7 +27,7 @@ const reactCounter =  async (req, res, next) => {
     } else {
         const postReacted = await post.findOneAndUpdate({_id: postID}, {
         $addToSet: {
-            likes: userID
+            likes: userID 
         }
 
       })
@@ -38,6 +40,27 @@ const reactCounter =  async (req, res, next) => {
 
 }
 
+const likedBy = async (req, res, next) => {
+
+  const {postID} = req.params
+
+  try {
+
+    console.log(postID)
+
+    const info = await post.findOne({_id: postID}).populate('likes')
+
+    res.status(200).json({
+      data: info
+    })
+    
+  } catch (err) {
+    next(createError(400, err))
+  }
+
+}
+
 module.exports = {
-    reactCounter
+    reactCounter,
+    likedBy
 }

@@ -1,11 +1,12 @@
 const createError = require(`http-errors`)
 const post = require(`../models/posts/post`)
+const user = require(`../models/users/users`)
 
 const getAllPost = async (req, res, next) => {
 
     try {
 
-        const getAllData = await post.find({})
+        const getAllData = await post.find({}).populate(`postBy`)
 
         res.json({
             status: 200,
@@ -21,7 +22,7 @@ const getAllPost = async (req, res, next) => {
 
 const putPost = async (req, res, next) => {
 
-    const {content} = req.body
+    const {content, userID} = req.body
 
     try {
 
@@ -30,10 +31,17 @@ const putPost = async (req, res, next) => {
         }
 
         const newPost = await new post({
-            content
+            content,
+            postBy: userID
         })
 
         await newPost.save()
+
+        await user.findOneAndUpdate({_id: userID}, {
+            $addToSet: {
+                posts: newPost._id
+            }
+        })
 
         res.json({
             data: newPost
@@ -98,9 +106,27 @@ const deleteOnePost = async (req, res, next) => {
 
 }
 
+const getUsersPosts = async (req, res, next) => {
+    const {userID} = req.params
+
+    try {
+
+        const info = await user.findOne({_id: userID}).populate(`posts`)
+
+        res.status(200).json({
+            data: info
+        })
+        
+    } catch (err) {
+        next(createError(400, err))
+    }
+
+}
+
 module.exports = {
     getAllPost,
     putPost,
     getOnePost,
-    deleteOnePost
+    deleteOnePost,
+    getUsersPosts
 }
