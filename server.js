@@ -19,12 +19,14 @@ const signUpRouter = require(`./routes/users/signUpRoute/signUp`)
 const loginRouter = require(`./routes/users/loginRoute/login`)
 const postsRouter = require(`./routes/postsRoute/posts`)
 const reactsRouter = require('./routes/reactsRoute/react')
+const profileRouter = require(`./routes/users/profileRoute/profile`)
 
 app.use(rootRouter)
 app.use(loginRouter)
 app.use(signUpRouter)
 app.use(postsRouter)
 app.use(reactsRouter)
+app.use(profileRouter)
 
 // Error Handler
 app.use((req, res, next) => {

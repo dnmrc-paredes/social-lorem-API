@@ -46,8 +46,6 @@ const likedBy = async (req, res, next) => {
 
   try {
 
-    console.log(postID)
-
     const info = await post.findOne({_id: postID}).populate('likes')
 
     res.status(200).json({
