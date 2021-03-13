@@ -1,12 +1,13 @@
 const createError = require(`http-errors`)
 const post = require(`../models/posts/post`)
 const user = require(`../models/users/users`)
+const comments = require(`../models/comments/comments`)
 
 const getAllPost = async (req, res, next) => {
 
     try {
 
-        const getAllData = await post.find({}).populate(`postBy`)
+        const getAllData = await post.find({}).populate(`postBy`).populate('likes')
 
         res.json({
             status: 200,
@@ -111,7 +112,10 @@ const getUsersPosts = async (req, res, next) => {
 
     try {
 
-        const info = await user.findOne({_id: userID}).populate(`posts`)
+        const info = await user.findOne({_id: userID}).populate(`posts`).populate({
+            path: 'posts',
+            populate: 'likes'
+        })
 
         res.status(200).json({
             data: info
@@ -123,10 +127,50 @@ const getUsersPosts = async (req, res, next) => {
 
 }
 
+const commentOnPost = async (req, res, next) => {
+
+    const {postid} = req.params
+    const {userID} = req.body
+    const {userComment} = req.body
+
+    try {
+
+        if (!userComment) {
+            next(createError(400, `Comment must not be empty.`))
+        }
+
+        const currentUser = await user.findOne({_id: userID})
+        // const currentPost = await post.findOne({_id: postid})
+        
+        const commentOnPost = await new comments ({
+            content: userComment,
+            commentBy: currentUser._id
+        })
+
+        // console.log(userComment)
+
+        await commentOnPost.save()
+
+        // console.log(info)
+
+        await post.findOneAndUpdate({_id: postid}, {
+            $push: {
+                comments: currentUser._id
+            }
+        })
+        
+    } catch (err) {
+        console.log(err)
+        next(createError(400, err))
+    }
+
+}
+
 module.exports = {
     getAllPost,
     putPost,
     getOnePost,
     deleteOnePost,
-    getUsersPosts
+    getUsersPosts,
+    commentOnPost
 }
