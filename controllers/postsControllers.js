@@ -155,12 +155,36 @@ const commentOnPost = async (req, res, next) => {
 
         await post.findOneAndUpdate({_id: postid}, {
             $push: {
-                comments: currentUser._id
+                comments: commentOnPost._id
             }
         })
         
     } catch (err) {
         console.log(err)
+        next(createError(400, err))
+    }
+
+}
+
+const getCommentsOnPost = async (req, res, next) => {
+
+    const {postid} = req.params
+
+    try {
+
+        const commentsInPost = await post.findOne({_id: postid}).populate('comments').populate({
+            path: 'comments',
+            populate: 'commentBy'
+        })
+
+        console.log(commentsInPost)
+
+        res.status(200).json({
+            status: res.status,
+            data: commentsInPost
+        })
+        
+    } catch (err) {
         next(createError(400, err))
     }
 
@@ -172,5 +196,6 @@ module.exports = {
     getOnePost,
     deleteOnePost,
     getUsersPosts,
-    commentOnPost
+    commentOnPost,
+    getCommentsOnPost
 }
