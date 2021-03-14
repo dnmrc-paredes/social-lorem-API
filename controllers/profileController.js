@@ -21,11 +21,11 @@ const editProfile =  async (req, res, next) => {
 
 const getCurrentUserInfo = async (req, res, next) => {
 
-    const {userId} = req.body
+    const {userID} = req.params
 
     try {
 
-        const info = await user.findOne({_id: userId})
+        const info = await user.findOne({_id: userID})
 
         res.status(200).json({
             data: info

@@ -177,7 +177,6 @@ const getCommentsOnPost = async (req, res, next) => {
             populate: 'commentBy'
         })
 
-        console.log(commentsInPost)
 
         res.status(200).json({
             status: res.status,
