@@ -22,7 +22,7 @@ const app = express()
 //       return cb(err, profile);
 // }))
 
-app.use(cors({ origin: "http://localhost:3000", credentials: true}))
+app.use(cors())
 app.use(helmet())
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
